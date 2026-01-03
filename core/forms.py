@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
-from .models import User
+from .models import User, Category
 
 
 class LoginForm(forms.Form):
@@ -89,3 +89,21 @@ class UserForm(forms.ModelForm):
             user.save()
         
         return user
+
+
+class CategoryForm(forms.ModelForm):
+    """Form for creating/updating categories."""
+    
+    class Meta:
+        model = Category
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Category Name',
+                'required': True
+            })
+        }
+        labels = {
+            'name': 'Category Name'
+        }

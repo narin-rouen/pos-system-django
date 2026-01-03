@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.db.models import Q
-from .models import User
-from .forms import LoginForm, UserForm
+from .models import User, Category
+from .forms import LoginForm, UserForm, CategoryForm
 
 
 def is_admin(user):
@@ -139,3 +139,79 @@ def user_delete_view(request, user_id):
         'user_obj': user,
     }
     return render(request, 'users/delete.html', context)
+
+
+# Category Management Views (All authenticated users)
+@login_required
+def category_list_view(request):
+    """List all categories."""
+    search_query = request.GET.get('search', '')
+    
+    categories = Category.objects.all().order_by('name')
+    
+    if search_query:
+        categories = categories.filter(name__icontains=search_query)
+    
+    context = {
+        'categories': categories,
+        'search_query': search_query,
+    }
+    return render(request, 'categories/list.html', context)
+
+
+@login_required
+def category_create_view(request):
+    """Create a new category."""
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save()
+            messages.success(request, f'Category "{category.name}" created successfully!')
+            return redirect('category_list')
+    else:
+        form = CategoryForm()
+    
+    context = {
+        'form': form,
+        'action': 'Create',
+    }
+    return render(request, 'categories/form.html', context)
+
+
+@login_required
+def category_update_view(request, category_id):
+    """Update a category."""
+    category = get_object_or_404(Category, id=category_id)
+    
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            category = form.save()
+            messages.success(request, f'Category "{category.name}" updated successfully!')
+            return redirect('category_list')
+    else:
+        form = CategoryForm(instance=category)
+    
+    context = {
+        'form': form,
+        'action': 'Update',
+        'category': category,
+    }
+    return render(request, 'categories/form.html', context)
+
+
+@login_required
+def category_delete_view(request, category_id):
+    """Delete a category."""
+    category = get_object_or_404(Category, id=category_id)
+    
+    if request.method == 'POST':
+        category_name = category.name
+        category.delete()
+        messages.success(request, f'Category "{category_name}" deleted successfully!')
+        return redirect('category_list')
+    
+    context = {
+        'category': category,
+    }
+    return render(request, 'categories/delete.html', context)
