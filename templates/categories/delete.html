@@ -42,7 +42,9 @@
           >
             <li><a class="dropdown-item" href="#!">Settings</a></li>
             <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+            <li>
+              <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+            </li>
           </ul>
         </li>
       </ul>
@@ -98,8 +100,12 @@
           <div class="container-fluid px-4">
             <h1 class="mt-4">Delete Category</h1>
             <ol class="breadcrumb mb-4">
-              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{% url 'category_list' %}">Categories</a></li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'category_list' %}">Categories</a>
+              </li>
               <li class="breadcrumb-item active">Delete</li>
             </ol>
 
@@ -115,13 +121,14 @@
                       Are you sure you want to delete the following category?
                     </p>
                     <div class="alert alert-warning">
-                      <strong>Name:</strong> {{ category.name }}<br>
+                      <strong>Name:</strong> {{ category.name }}<br />
                       <strong>Products:</strong> {{ category.products.count }}
                     </div>
                     {% if category.products.count > 0 %}
                     <p class="text-danger">
-                      <strong>Warning:</strong> This category has {{ category.products.count }} product(s). 
-                      Deleting it will set those products' category to NULL.
+                      <strong>Warning:</strong> This category has {{
+                      category.products.count }} product(s). Deleting it will
+                      set those products' category to NULL.
                     </p>
                     {% else %}
                     <p class="text-danger">
@@ -134,7 +141,10 @@
                         <button type="submit" class="btn btn-danger">
                           <i class="fas fa-trash"></i> Yes, Delete Category
                         </button>
-                        <a href="{% url 'category_list' %}" class="btn btn-secondary">
+                        <a
+                          href="{% url 'category_list' %}"
+                          class="btn btn-secondary"
+                        >
                           <i class="fas fa-times"></i> Cancel
                         </a>
                       </div>
